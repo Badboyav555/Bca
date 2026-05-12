@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>BCA Nexus | Premium Learning Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #0a0c10;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #334155;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover {
+      color: #06b6d4;
+    }
+
+    .lang-btn {
+      background: #eef2ff;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn:hover {
+      background: #e0e7ff;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 3rem 0 2rem;
+    }
+
+    .hero-title {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #0f172a, #06b6d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      color: #475569;
+      margin-top: 0.8rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.8rem;
+    }
+
+    .btn-primary {
+      background: #06b6d4;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #0891b2;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #06b6d4;
+      color: #0f172a;
+      padding: 0.65rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: #06b6d4;
+      color: white;
+    }
+
+    /* Search */
+    .search-box {
+      width: 100%;
+      max-width: 500px;
+      margin: 1.5rem auto;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 60px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+    }
+
+    /* Cards */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 2rem 0 1rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.3rem;
+      margin-bottom: 2rem;
+    }
+
+    .semester-card, .subject-card, .unit-card {
+      background: white;
+      border-radius: 1.2rem;
+      padding: 1.3rem;
+      transition: all 0.25s ease;
+      border: 1px solid #eef2ff;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .semester-card:hover, .subject-card:hover, .unit-card:hover {
+      transform: translateY(-3px);
+      border-color: #06b6d4;
+      box-shadow: 0 12px 24px -12px rgba(6, 182, 212, 0.2);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-badge {
+      display: inline-block;
+      background: #e6f7ff;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #0891b2;
+      margin-top: 0.5rem;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.8rem;
+      margin: 1.5rem 0 1rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: #f1f5f9;
+      border: none;
+      padding: 0.6rem 1.3rem;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #06b6d4;
+      color: white;
+    }
+
+    /* Notes Content */
+    .notes-content {
+      background: white;
+      border-radius: 1.2rem;
+      padding: 2rem;
+      line-height: 1.7;
+      border: 1px solid #eef2ff;
+    }
+
+    .notes-content h2 {
+      margin: 1.2rem 0 0.8rem;
+      font-size: 1.5rem;
+    }
+
+    .notes-content h3 {
+      margin: 1rem 0 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .notes-content p {
+      margin-bottom: 0.8rem;
+      color: #334155;
+    }
+
+    .notes-content ul, .notes-content ol {
+      margin: 0.8rem 0 0.8rem 1.8rem;
+    }
+
+    .notes-content pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.8rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .notes-content code {
+      background: #f1f5f9;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.3rem;
+      font-family: monospace;
+    }
+
+    /* Lock overlay */
+    .locked-wrapper {
+      position: relative;
+      max-height: 400px;
+      overflow: hidden;
+    }
+
+    .locked-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: linear-gradient(to bottom, transparent, white);
+      pointer-events: none;
+    }
+
+    .unlock-btn {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.8rem 1.8rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 400px;
+      width: 90%;
+      padding: 1.8rem;
+      border-radius: 1.5rem;
+      text-align: center;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.6rem 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid #eef2ff;
+      color: #64748b;
+      font-size: 0.8rem;
+      margin-top: 3rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .hero-title {
+        font-size: 1.8rem;
+      }
+      .container {
+        padding: 0 1rem;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .notes-content {
+        padding: 1rem;
+      }
+    }
+
+    /* Back button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: none;
+      border: none;
+      color: #06b6d4;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Content will be loaded here -->
+  <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <div style="text-align: center;">
+      <div style="font-size: 2rem;">📚</div>
+      <h2>Loading BCA Nexus...</h2>
+    </div>
+  </div>
+</div>
+
+<div id="unlockModal" class="modal">
+  <div class="modal-content">
+    <h3>🔓 Unlock Full Notes</h3>
+    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Get complete access to premium notes</p>
+    <input type="text" id="unlockName" placeholder="Full Name">
+    <input type="tel" id="unlockMobile" placeholder="Mobile Number">
+    <div class="modal-buttons">
+      <button class="btn-primary" id="modalSubmitBtn">Unlock Now</button>
+      <button class="btn-outline" id="modalCloseBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================
+  // DEMO DATA - FULLY WORKING WITHOUT SUPABASE
+  // ============================================
+  
+  const DEMO_DATA = {
+    semesters: [
+      { id: 1, name: "I" }, { id: 2, name: "II" }, { id: 3, name: "III" },
+      { id: 4, name: "IV" }, { id: 5, name: "V" }, { id: 6, name: "VI" }
+    ],
+    subjects: {
+      1: ["Programming Fundamentals using C", "Mathematics I", "Digital Electronics", "English Communication"],
+      2: ["Object Oriented Programming using C++", "Data Structures", "Database Management Systems", "Mathematics II"],
+      3: ["Java Programming", "Operating Systems", "Computer Networks", "Software Engineering"],
+      4: ["Python Programming", "Web Technologies", "Algorithm Analysis", "Management Information Systems"],
+      5: ["Artificial Intelligence", "Cloud Computing", "Cyber Security", "Mobile App Development"],
+      6: ["Machine Learning", "Internet of Things", "Blockchain Technology", "Data Visualization"]
+    },
+    units: {
+      1: ["Introduction to C", "Variables & Data Types", "Control Statements", "Arrays & Strings", "Functions & Recursion"],
+      2: ["OOPS Concepts", "Classes & Objects", "Inheritance & Polymorphism", "File Handling", "Templates & STL"],
+      3: ["Java Basics", "OOP in Java", "Exception Handling", "Multithreading", "Collections Framework"]
+    },
+    notesData: {
+      1: {
+        title: "Complete C Programming Notes",
+        content: `<h2>Introduction to C Programming</h2>
+<p>C is a powerful general-purpose programming language developed by Dennis Ritchie at Bell Labs in 1972. It is widely used for system programming, embedded systems, and application development.</p>
+
+<h3>Key Features of C</h3>
+<ul>
+<li><strong>Simple and Efficient</strong> - C has a simple syntax and powerful features</li>
+<li><strong>Portability</strong> - C programs can run on different machines</li>
+<li><strong>Rich Library</strong> - Extensive set of built-in functions</li>
+<li><strong>Low-level Access</strong> - Direct memory manipulation using pointers</li>
+<li><strong>Recursion Support</strong> - Functions can call themselves</li>
+<li><strong>Structured Language</strong> - Supports functions, loops, and decisions</li>
+</ul>
+
+<h3>Structure of a C Program</h3>
+<pre><code>#include &lt;stdio.h&gt;  // Header file
+#define PI 3.14      // Preprocessor directive
+
+int globalVar = 10;  // Global variable
+
+int main() {         // Main function
+    int localVar = 5; // Local variable
+    printf("Hello World!");
+    return 0;
+}</code></pre>
+
+<h3>First C Program - Hello World</h3>
+<pre><code>#include &lt;stdio.h&gt;
+int main() {
+    printf("Hello, World!");
+    return 0;
+}</code></pre>
+
+<h3>Data Types in C</h3>
+<ul>
+<li><strong>int</strong> - Integer values (2-4 bytes)</li>
+<li><strong>float</strong> - Floating point numbers (4 bytes)</li>
+<li><strong>double</strong> - Double precision float (8 bytes)</li>
+<li><strong>char</strong> - Single character (1 byte)</li>
+<li><strong>void</strong> - No value</li>
+</ul>
+
+<h3>Variables and Constants</h3>
+<pre><code>int age = 25;
+float salary = 45000.50;
+char grade = 'A';
+const int DAYS = 7;</code></pre>
+
+<h3>Operators in C</h3>
+<ul>
+<li>Arithmetic: +, -, *, /, %</li>
+<li>Relational: ==, !=, &lt;, &gt;, &lt;=, &gt;=</li>
+<li>Logical: &&, ||, !</li>
+<li>Assignment: =, +=, -=, *=, /=</li>
+<li>Increment/Decrement: ++, --</li>
+</ul>
+
+<h3>Control Statements</h3>
+<h4>If-Else Statement</h4>
+<pre><code>if (condition) {
+    // code executes if condition is true
+} else {
+    // code executes if condition is false
+}</code></pre>
+
+<h4>Switch Statement</h4>
+<pre><code>switch(expression) {
+    case value1:
+        // code
+        break;
+    case value2:
+        // code
+        break;
+    default:
+        // default code
+}</code></pre>
+
+<h4>Loops</h4>
+<pre><code>// For loop
+for(int i = 0; i < 10; i++) {
+    printf("%d ", i);
+}
+
+// While loop
+while(condition) {
+    // code
+}
+
+// Do-While loop
+do {
+    // code
+} while(condition);</code></pre>
+
+<h3>Arrays</h3>
+<pre><code>int numbers[5] = {1, 2, 3, 4, 5};
+int matrix[3][3] = {{1,2,3},{4,5,6},{7,8,9}};</code></pre>
+
+<h3>Functions</h3>
+<pre><code>// Function declaration
+int add(int a, int b);
+
+// Function definition
+int add(int a, int b) {
+    return a + b;
+}</code></pre>
+
+<h3>Pointers</h3>
+<pre><code>int x = 10;
+int *ptr = &x;
+printf("%d", *ptr);  // Output: 10</code></pre>
+
+<h3>Important Interview Questions</h3>
+<ol>
+<li><strong>What is the difference between compiler and interpreter?</strong><br>Compiler translates entire program at once, interpreter translates line by line.</li>
+<li><strong>What is a pointer?</strong><br>Pointer is a variable that stores memory address of another variable.</li>
+<li><strong>What is call by value and call by reference?</strong><br>Call by value passes copy, call by reference passes address.</li>
+</ol>
+
+<h3>Practice Problems</h3>
+<p>1. Write a program to check if a number is prime or not.<br>
+2. Write a program to find factorial using recursion.<br>
+3. Write a program to implement bubble sort.</p>
+
+<p><strong>📌 Note:</strong> Practice these concepts regularly and try to write code daily for better understanding.</p>`
+      },
+      2: {
+        title: "C++ Programming Notes",
+        content: `<h2>Object Oriented Programming in C++</h2>
+<p>C++ is an extension of C that adds object-oriented features. It was developed by Bjarne Stroustrup in 1983.</p>
+
+<h3>Classes and Objects</h3>
+<pre><code>class Student {
+public:
+    string name;
+    int age;
+    void display() {
+        cout << name << " - " << age;
+    }
+};
+
+Student s1;
+s1.name = "John";
+s1.age = 20;</code></pre>
+
+<h3>Inheritance</h3>
+<pre><code>class Parent {
+public:
+    void show() { cout << "Parent class"; }
+};
+
+class Child : public Parent {
+public:
+    void display() { cout << "Child class"; }
+};</code></pre>
+
+<h3>Polymorphism</h3>
+<p>Polymorphism allows functions to have same name but different behavior. Achieved through function overloading and virtual functions.</p>
+
+<h3>Encapsulation</h3>
+<p>Data hiding using private/protected access specifiers. Getter/setter methods provide controlled access.</p>
+
+<h3>Abstraction</h3>
+<p>Hiding implementation details using abstract classes and interfaces.</p>
+
+<p><strong>🎯 Key Takeaway:</strong> OOP helps in organizing code, reusability, and maintaining large projects.</p>`
+      }
+    },
+    pyqsData: {
+      1: [
+        { year: 2024, question: "What is the difference between compiler and interpreter?", answer: "Compiler translates entire program at once, interpreter line by line." },
+        { year: 2024, question: "Explain the structure of a C program.", answer: "C program has header files, main function, variable declarations, statements, and return." },
+        { year: 2023, question: "What are the key features of C language?", answer: "Simple, Portable, Efficient, Rich library, Low-level access." },
+        { year: 2023, question: "Write a program to check prime number.", answer: "Program using loop to check divisibility." }
+      ]
+    },
+    impQuestions: {
+      1: [
+        { category: "Most Repeated", question: "Explain pointers with example", answer: "Pointers store memory addresses. int *p, a=10; p=&a;" },
+        { category: "Viva Questions", question: "Difference between malloc and calloc", answer: "malloc allocates single block, calloc multiple blocks and initializes to zero." },
+        { category: "Short Questions", question: "What is an array?", answer: "Collection of similar elements stored in contiguous memory." },
+        { category: "Long Questions", question: "Explain control statements", answer: "if-else, switch, loops are control statements." }
+      ]
+    }
+  };
+
+  // App State
+  let currentLang = "english";
+  let currentPage = "home";
+  let currentSemester = null;
+  let currentSubject = null;
+  let currentUnit = null;
+  let unlockedNotes = JSON.parse(localStorage.getItem("unlockedNotes") || "{}");
+
+  // Helper Functions
+  function saveUnlock(noteId, name, mobile) {
+    unlockedNotes[noteId] = true;
+    localStorage.setItem("unlockedNotes", JSON.stringify(unlockedNotes));
+    // Save lead
+    console.log("Lead saved:", { name, mobile, noteId });
+  }
+
+  function showUnlockModal(noteId, callback) {
+    const modal = document.getElementById("unlockModal");
+    modal.style.display = "flex";
+    document.getElementById("modalSubmitBtn").onclick = () => {
+      const name = document.getElementById("unlockName").value.trim();
+      const mobile = document.getElementById("unlockMobile").value.trim();
+      if (!name || !mobile) {
+        alert("Please enter name and mobile number");
+        return;
+      }
+      saveUnlock(noteId, name, mobile);
+      modal.style.display = "none";
+      document.getElementById("unlockName").value = "";
+      document.getElementById("unlockMobile").value = "";
+      if (callback) callback();
+      renderCurrentPage();
+    };
+    document.getElementById("modalCloseBtn").onclick = () => {
+      modal.style.display = "none";
+    };
+  }
+
+  // Navigation
+  function navigateTo(page, params = {}) {
+    currentPage = page;
+    if (params.semester) currentSemester = params.semester;
+    if (params.subject) currentSubject = params.subject;
+    if (params.unit) currentUnit = params.unit;
+    renderCurrentPage();
+    window.scrollTo(0, 0);
+  }
+
+  function goBack() {
+    if (currentPage === "subject") {
+      currentPage = "semester";
+      currentSubject = null;
+    } else if (currentPage === "unit") {
+      currentPage = "subject";
+      currentUnit = null;
+    } else if (currentPage === "notes") {
+      currentPage = "unit";
+    } else {
+      currentPage = "home";
+      currentSemester = null;
+      currentSubject = null;
+      currentUnit = null;
+    }
+    renderCurrentPage();
+  }
+
+  // Render Functions
+  function renderHome() {
+    const semesters = DEMO_DATA.semesters;
+    return `
+      <div class="hero">
+        <h1 class="hero-title">Your Complete BCA<br>Learning Platform</h1>
+        <p class="hero-subtitle">Notes · PYQs · Important Questions · Quiz</p>
+        <div class="btn-group">
+          <button class="btn-primary" onclick="navigateTo('semester', {semester:1})">Start Learning</button>
+          <button class="btn-outline" onclick="navigateTo('semester', {semester:1})">Browse Notes</button>
+        </div>
+      </div>
+      <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search semesters, subjects, notes...">
+      </div>
+      <h2 class="section-title">📚 All Semesters</h2>
+      <div class="card-grid" id="semesterGrid">
+        ${semesters.map(s => `
+          <div class="semester-card" onclick="navigateTo('semester', {semester:${s.id}})">
+            <div class="card-title">Semester ${s.name}</div>
+            <div class="card-badge">${DEMO_DATA.subjects[s.id]?.length || 0} Subjects</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="background: linear-gradient(135deg, #f0f9ff, #ffffff); border-radius: 1.5rem; padding: 1.5rem; margin: 1rem 0;">
+        <h3>🔥 Trending Subjects</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem;">
+          <span class="card-badge">Programming in C</span>
+          <span class="card-badge">Data Structures</span>
+          <span class="card-badge">Java Programming</span>
+          <span class="card-badge">Python</span>
+          <span class="card-badge">Machine Learning</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSemester() {
+    const subjects = DEMO_DATA.subjects[currentSemester] || [];
+    return `
+      <button class="back-btn" onclick="goBack()">← Back to Home</button>
+      <h2 class="section-title">Semester ${currentSemester}</h2>
+      <div class="card-grid">
+        ${subjects.map((sub, idx) => `
+          <div class="subject-card" onclick="navigateTo('subject', {semester:${currentSemester}, subject:${idx+1}})">
+            <div class="card-title">${sub}</div>
+            <div class="card-badge">Units & Notes</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderSubject() {
+    const units = DEMO_DATA.units[currentSubject] || DEMO_DATA.units[1];
+    const subjectName = DEMO_DATA.subjects[currentSemester]?.[currentSubject - 1] || "Subject";
+    return `
+      <button class="back-btn" onclick="goBack()">← Back to Semesters</button>
+      <h2 class="section-title">${subjectName}</h2>
+      <div class="card-grid">
+        ${units.map((unit, idx) => `
+          <div class="unit-card" onclick="navigateTo('unit', {semester:${currentSemester}, subject:${currentSubject}, unit:${idx+1}})">
+            <div class="card-title">${unit}</div>
+            <div class="card-badge">Notes + PYQs + Imp Qs</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderUnit() {
+    const unitId = currentUnit;
+    const note = DEMO_DATA.notesData[unitId] || DEMO_DATA.notesData[1];
+    const isUnlocked = unlockedNotes[`unit_${currentSemester}_${currentSubject}_${unitId}`];
+    
+    return `
+      <button class="back-btn" onclick="goBack()">← Back to Subjects</button>
+      <h2 class="section-title">${DEMO_DATA.units[currentSubject]?.[unitId-1] || "Unit " + unitId}</h2>
+      
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('notes')">📄 Notes</button>
+        <button class="tab-btn" onclick="showTab('pyq')">📜 PYQs</button>
+        <button class="tab-btn" onclick="showTab('imp')">⭐ Important Questions</button>
+      </div>
+      
+      <div id="tabContent"></div>
+    `;
+  }
+
+  window.showTab = function(tab) {
+    const unitId = currentUnit;
+    const isUnlocked = unlockedNotes[`unit_${currentSemester}_${currentSubject}_${unitId}`];
+    const note = DEMO_DATA.notesData[unitId] || DEMO_DATA.notesData[1];
+    const contentDiv = document.getElementById("tabContent");
+    
+    // Update active tab style
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.remove('active');
+      if ((tab === 'notes' && i === 0) || (tab === 'pyq' && i === 1) || (tab === 'imp' && i === 2)) {
+        btn.classList.add('active');
+      }
+    });
+    
+    if (tab === 'notes') {
+      if (!isUnlocked) {
+        // Show preview (first 30%)
+        const previewLength = Math.floor(note.content.length * 0.3);
+        const preview = note.content.substring(0, previewLength);
+        contentDiv.innerHTML = `
+          <div class="locked-wrapper">
+            <div class="notes-content">${preview}...</div>
+          </div>
+          <button class="btn-primary unlock-btn" onclick="showUnlockModal('unit_${currentSemester}_${currentSubject}_${unitId}', () => location.reload())">🔓 Unlock Full Notes</button>
+        `;
+      } else {
+        contentDiv.innerHTML = `<div class="notes-content">${note.content}</div>`;
+      }
+    } 
+    else if (tab === 'pyq') {
+      const pyqs = DEMO_DATA.pyqsData[unitId] || DEMO_DATA.pyqsData[1];
+      contentDiv.innerHTML = `
+        <div class="notes-content">
+          ${pyqs.map(p => `
+            <details style="margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid #eef2ff;">
+              <summary style="font-weight: 600; cursor: pointer;">📅 ${p.year} - ${p.question}</summary>
+              <p style="margin-top: 0.5rem; color: #475569;"><strong>Answer:</strong> ${p.answer}</p>
+            </details>
+          `).join('')}
+        </div>
+      `;
+    }
+    else if (tab === 'imp') {
+      const impQs = DEMO_DATA.impQuestions[unitId] || DEMO_DATA.impQuestions[1];
+      contentDiv.innerHTML = `
+        <div class="notes-content">
+          ${impQs.map(q => `
+            <div style="margin-bottom: 1.2rem; padding: 1rem; background: #f8fafc; border-radius: 0.8rem;">
+              <div class="card-badge" style="margin-bottom: 0.5rem;">${q.category}</div>
+              <p style="font-weight: 600;">❓ ${q.question}</p>
+              <details style="margin-top: 0.5rem;">
+                <summary style="color: #06b6d4; cursor: pointer;">View Answer</summary>
+                <p style="margin-top: 0.5rem;">${q.answer}</p>
+              </details>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+  };
+
+  function renderCurrentPage() {
+    let content = "";
+    if (currentPage === "home") content = renderHome();
+    else if (currentPage === "semester") content = renderSemester();
+    else if (currentPage === "subject") content = renderSubject();
+    else if (currentPage === "unit") content = renderUnit();
+    
+    const navbar = `
+      <div class="navbar">
+        <div class="nav-inner">
+          <div class="logo" onclick="navigateTo('home')">📘 BCA Nexus</div>
+          <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+          <div class="nav-links" id="navLinks">
+            <a onclick="navigateTo('home')">Home</a>
+            <a onclick="navigateTo('semester', {semester:1})">Semesters</a>
+            <a>Notes</a>
+            <a>PYQs</a>
+            <button class="lang-btn" onclick="toggleLang()">${currentLang === 'english' ? '🌐 हिंदी' : '🌐 English'}</button>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        ${content}
+      </div>
+      <footer>
+        <p>© 2025 BCA Nexus — Premium Learning Platform for BCA Students</p>
+      </footer>
+    `;
+    
+    document.getElementById("app").innerHTML = navbar;
+    
+    // Re-attach tab functionality if on unit page
+    if (currentPage === "unit") {
+      setTimeout(() => showTab('notes'), 50);
+    }
+  }
+
+  function toggleMobileMenu() {
+    const nav = document.getElementById("navLinks");
+    nav.classList.toggle("show");
+  }
+
+  function toggleLang() {
+    currentLang = currentLang === "english" ? "hindi" : "english";
+    renderCurrentPage();
+  }
+
+  // Make functions global for onclick
+  window.navigateTo = navigateTo;
+  window.goBack = goBack;
+  window.toggleMobileMenu = toggleMobileMenu;
+  window.toggleLang = toggleLang;
+  window.showUnlockModal = showUnlockModal;
+  
+  // Initialize
+  renderCurrentPage();
+</script>
+
+</body>
+</html>
