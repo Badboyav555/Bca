@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>BCA Nexus | Premium Learning Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+            padding: 0.8rem 0;
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #334155;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #06b6d4;
+        }
+
+        .lang-btn {
+            background: #eef2ff;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            background: #e0e7ff;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 3rem 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0f172a, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            color: #475569;
+            margin-top: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.8rem;
+        }
+
+        .btn-primary {
+            background: #06b6d4;
+            border: none;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #0891b2;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #06b6d4;
+            color: #0f172a;
+            padding: 0.65rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background: #06b6d4;
+            color: white;
+        }
+
+        /* Cards */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.3rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.3rem;
+            transition: all 0.25s ease;
+            border: 1px solid #eef2ff;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #06b6d4;
+            box-shadow: 0 12px 24px -12px rgba(6, 182, 212, 0.2);
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-badge {
+            display: inline-block;
+            background: #e6f7ff;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #0891b2;
+            margin-top: 0.5rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.8rem;
+            margin: 1.5rem 0 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: #f1f5f9;
+            border: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: #06b6d4;
+            color: white;
+        }
+
+        /* Notes Content */
+        .notes-content {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 2rem;
+            line-height: 1.7;
+            border: 1px solid #eef2ff;
+        }
+
+        .notes-content h2 {
+            margin: 1.2rem 0 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        .notes-content h3 {
+            margin: 1rem 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .notes-content p {
+            margin-bottom: 0.8rem;
+            color: #334155;
+        }
+
+        .notes-content ul, .notes-content ol {
+            margin: 0.8rem 0 0.8rem 1.8rem;
+        }
+
+        .notes-content pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .notes-content code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+            font-family: monospace;
+        }
+
+        /* Lock overlay */
+        .locked-wrapper {
+            position: relative;
+            max-height: 400px;
+            overflow: hidden;
+        }
+
+        .locked-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 180px;
+            background: linear-gradient(to bottom, transparent, white);
+            pointer-events: none;
+        }
+
+        .unlock-btn {
+            display: block;
+            margin: 1rem auto;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 400px;
+            width: 90%;
+            padding: 1.8rem;
+            border-radius: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.6rem 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: none;
+            border: none;
+            color: #06b6d4;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #eef2ff;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 3rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            .nav-links.show {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .notes-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="loading">Loading BCA Nexus...</div>
+</div>
+
+<div id="unlockModal" class="modal">
+    <div class="modal-content">
+        <h3>🔓 Unlock Full Notes</h3>
+        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Get complete access to premium notes</p>
+        <input type="text" id="unlockName" placeholder="Full Name">
+        <input type="tel" id="unlockMobile" placeholder="Mobile Number">
+        <div class="modal-buttons">
+            <button class="btn-primary" id="modalSubmitBtn">Unlock Now</button>
+            <button class="btn-outline" id="modalCloseBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== 🔥 YAHAN APNA SUPABASE URL AUR ANON KEY DAALO 🔥 ==========
+    const SUPABASE_URL = "https://your-project.supabase.co";  // CHANGE KARO
+    const SUPABASE_ANON_KEY = "your-anon-key";  // CHANGE KARO
+    // ====================================================================
+
+    let supabase;
+    let currentLang = "english";
+    let currentPage = "home";
+    let currentSemesterId = null;
+    let currentSubjectId = null;
+    let currentUnitId = null;
+    let currentSubjectName = "";
+    
+    // Data stores
+    let semesters = [];
+    let subjects = {};
+    let units = {};
+    let currentNote = null;
+    
+    let unlockedNotes = JSON.parse(localStorage.getItem("unlockedNotes") || "{}");
+    
+    // Initialize Supabase and load data
+    async function init() {
+        // Check if Supabase is configured
+        if (SUPABASE_URL === "https://your-project.supabase.co") {
+            document.getElementById("app").innerHTML = `
+                <div style="text-align: center; padding: 3rem; max-width: 600px; margin: 0 auto;">
+                    <div style="font-size: 3rem;">⚠️</div>
+                    <h2 style="margin: 1rem 0;">Supabase Configuration Required</h2>
+                    <p style="color: #64748b;">Please update your Supabase URL and Anon Key in the code.</p>
+                    <div style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; text-align: left;">
+                        <code style="font-size: 0.8rem;">
+                        const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";<br>
+                        const SUPABASE_ANON_KEY = "your-actual-anon-key";
+                        </code>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            await loadAllData();
+            render();
+        } catch (error) {
+            console.error("Supabase connection error:", error);
+            document.getElementById("app").innerHTML = `
+                <div style="text-align: center; padding: 3rem;">
+                    <h2>❌ Connection Error</h2>
+                    <p>Check your Supabase URL and Anon Key</p>
+                </div>
+            `;
+        }
+    }
+    
+    async function loadAllData() {
+        // Load semesters
+        const { data: semData } = await supabase.from("semesters").select("*").order("id");
+        semesters = semData || [];
+        
+        // Load subjects
+        const { data: subData } = await supabase.from("subjects").select("*");
+        subjects = {};
+        if (subData) {
+            subData.forEach(s => {
+                if (!subjects[s.semester_id]) subjects[s.semester_id] = [];
+                subjects[s.semester_id].push(s);
+            });
+        }
+        
+        // Load units
+        const { data: unitData } = await supabase.from("units").select("*");
+        units = {};
+        if (unitData) {
+            unitData.forEach(u => {
+                if (!units[u.subject_id]) units[u.subject_id] = [];
+                units[u.subject_id].push(u);
+            });
+        }
+    }
+    
+    async function loadNote(unitId) {
+        const { data } = await supabase.from("notes").select("*").eq("unit_id", unitId).maybeSingle();
+        currentNote = data;
+        return data;
+    }
+    
+    async function loadPYQs(unitId) {
+        const { data } = await supabase.from("pyqs").select("*").eq("unit_id", unitId).order("year", { ascending: false });
+        return data || [];
+    }
+    
+    async function loadImpQuestions(unitId) {
+        const { data } = await supabase.from("important_questions").select("*").eq("unit_id", unitId);
+        return data || [];
+    }
+    
+    async function saveLead(name, mobile, noteId) {
+        await supabase.from("leads").insert([{ name, mobile, note_id: noteId, created_at: new Date().toISOString() }]);
+    }
+    
+    function showUnlockModal(noteId, callback) {
+        const modal = document.getElementById("unlockModal");
+        modal.style.display = "flex";
+        
+        document.getElementById("modalSubmitBtn").onclick = async () => {
+            const name = document.getElementById("unlockName").value.trim();
+            const mobile = document.getElementById("unlockMobile").value.trim();
+            
+            if (!name || !mobile) {
+                alert("Please enter both name and mobile number");
+                return;
+            }
+            
+            await saveLead(name, mobile, noteId);
+            unlockedNotes[noteId] = true;
+            localStorage.setItem("unlockedNotes", JSON.stringify(unlockedNotes));
+            
+            modal.style.display = "none";
+            document.getElementById("unlockName").value = "";
+            document.getElementById("unlockMobile").value = "";
+            
+            if (callback) callback();
+            render();
+        };
+        
+        document.getElementById("modalCloseBtn").onclick = () => {
+            modal.style.display = "none";
+        };
+    }
+    
+    // Navigation
+    function navigateTo(page, params = {}) {
+        currentPage = page;
+        if (params.semesterId !== undefined) currentSemesterId = params.semesterId;
+        if (params.subjectId !== undefined) { 
+            currentSubjectId = params.subjectId;
+            currentSubjectName = params.subjectName || "";
+        }
+        if (params.unitId !== undefined) currentUnitId = params.unitId;
+        render();
+        window.scrollTo(0, 0);
+    }
+    
+    function goBack() {
+        if (currentPage === "subject") {
+            currentPage = "semester";
+            currentSubjectId = null;
+        } else if (currentPage === "unit") {
+            currentPage = "subject";
+            currentUnitId = null;
+        } else {
+            currentPage = "home";
+            currentSemesterId = null;
+            currentSubjectId = null;
+            currentUnitId = null;
+        }
+        render();
+    }
+    
+    function toggleMobileMenu() {
+        const nav = document.getElementById("navLinks");
+        if (nav) nav.classList.toggle("show");
+    }
+    
+    function toggleLang() {
+        currentLang = currentLang === "english" ? "hindi" : "english";
+        localStorage.setItem("prefLang", currentLang);
+        render();
+    }
+    
+    // Render functions
+    function getNavbar() {
+        return `
+            <div class="navbar">
+                <div class="nav-inner">
+                    <div class="logo" onclick="navigateTo('home')">📘 BCA Nexus</div>
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+                    <div class="nav-links" id="navLinks">
+                        <a onclick="navigateTo('home')">Home</a>
+                        <a onclick="navigateTo('semester', {semesterId: ${semesters[0]?.id || 1}})">Semesters</a>
+                        <a>Notes</a>
+                        <a>PYQs</a>
+                        <button class="lang-btn" onclick="toggleLang()">${currentLang === 'english' ? '🌐 हिंदी' : '🌐 English'}</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function getFooter() {
+        return `<footer>© 2025 BCA Nexus — Premium Learning Platform for BCA Students</footer>`;
+    }
+    
+    async function render() {
+        let content = "";
+        
+        if (currentPage === "home") {
+            content = `
+                <div class="hero">
+                    <h1>Your Complete BCA<br>Learning Platform</h1>
+                    <p>Notes · PYQs · Important Questions · Quiz</p>
+                    <div class="btn-group">
+                        <button class="btn-primary" onclick="navigateTo('semester', {semesterId: ${semesters[0]?.id || 1}})">Start Learning</button>
+                        <button class="btn-outline" onclick="navigateTo('semester', {semesterId: ${semesters[0]?.id || 1}})">Browse Notes</button>
+                    </div>
+                </div>
+                <h2 class="section-title">📚 All Semesters</h2>
+                <div class="card-grid">
+                    ${semesters.map(s => `
+                        <div class="card" onclick="navigateTo('semester', {semesterId: ${s.id}})">
+                            <h3>Semester ${s.name}</h3>
+                            <div class="card-badge">${subjects[s.id]?.length || 0} Subjects</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        else if (currentPage === "semester") {
+            const semesterSubjects = subjects[currentSemesterId] || [];
+            const semesterName = semesters.find(s => s.id === currentSemesterId)?.name || currentSemesterId;
+            
+            content = `
+                <button class="back-btn" onclick="goBack()">← Back to Home</button>
+                <h2 class="section-title">Semester ${semesterName}</h2>
+                <div class="card-grid">
+                    ${semesterSubjects.map(s => `
+                        <div class="card" onclick="navigateTo('subject', {semesterId: ${currentSemesterId}, subjectId: ${s.id}, subjectName: '${s.name}'})">
+                            <h3>${s.name}</h3>
+                            <div class="card-badge">${units[s.id]?.length || 0} Units</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        else if (currentPage === "subject") {
+            const subjectUnits = units[currentSubjectId] || [];
+            
+            content = `
+                <button class="back-btn" onclick="goBack()">← Back to Semesters</button>
+                <h2 class="section-title">${currentSubjectName}</h2>
+                <div class="card-grid">
+                    ${subjectUnits.map(u => `
+                        <div class="card" onclick="navigateTo('unit', {semesterId: ${currentSemesterId}, subjectId: ${currentSubjectId}, unitId: ${u.id}})">
+                            <h3>${u.name}</h3>
+                            <div class="card-badge">Notes + PYQs + Imp Qs</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        else if (currentPage === "unit") {
+            const note = await loadNote(currentUnitId);
+            const isUnlocked = unlockedNotes[`note_${currentUnitId}`];
+            const contentField = currentLang === "english" ? "english_content" : "hindi_content";
+            const fullContent = note?.[contentField] || note?.english_content || "<p>Content not available in selected language.</p>";
+            const previewContent = note?.preview_content || (fullContent.length > 300 ? fullContent.substring(0, 300) + "..." : fullContent);
+            
+            content = `
+                <button class="back-btn" onclick="goBack()">← Back to Subjects</button>
+                <h2 class="section-title">${note?.title || "Notes"}</h2>
+                <div class="tabs">
+                    <div class="tab active" data-tab="notes">📄 Notes</div>
+                    <div class="tab" data-tab="pyq">📜 PYQs</div>
+                    <div class="tab" data-tab="imp">⭐ Important Questions</div>
+                </div>
+                <div id="tabContent"></div>
+            `;
+            
+            document.getElementById("app").innerHTML = getNavbar() + `<div class="container">${content}</div>` + getFooter();
+            
+            // Tab switching logic
+            const tabs = document.querySelectorAll('.tab');
+            const tabContent = document.getElementById("tabContent");
+            
+            async function switchTab(tabName) {
+                tabs.forEach(t => t.classList.remove('active'));
+                document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+                
+                if (tabName === "notes") {
+                    if (!isUnlocked && fullContent && fullContent.length > 300) {
+                        tabContent.innerHTML = `
+                            <div class="locked-wrapper">
+                                <div class="notes-content">${previewContent}</div>
+                            </div>
+                            <button class="btn-primary unlock-btn" style="display:block; margin:1rem auto;" onclick="showUnlockModal('note_${currentUnitId}', () => location.reload())">🔓 Unlock Full Notes</button>
+                        `;
+                    } else {
+                        tabContent.innerHTML = `<div class="notes-content">${fullContent}</div>`;
+                    }
+                } 
+                else if (tabName === "pyq") {
+                    const pyqs = await loadPYQs(currentUnitId);
+                    if (pyqs.length === 0) {
+                        tabContent.innerHTML = `<div class="notes-content"><p>No PYQs available for this unit yet.</p></div>`;
+                    } else {
+                        tabContent.innerHTML = `
+                            <div class="notes-content">
+                                ${pyqs.map(p => `
+                                    <details style="margin-bottom: 1rem; padding: 0.5rem; border-bottom: 1px solid #eef2ff;">
+                                        <summary style="font-weight: 600; cursor: pointer;">📅 ${p.year} - ${p.question}</summary>
+                                        <p style="margin-top: 0.5rem; color: #475569;"><strong>Answer:</strong> ${p.answer || "Answer not available"}</p>
+                                    </details>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } 
+                else if (tabName === "imp") {
+                    const impQs = await loadImpQuestions(currentUnitId);
+                    if (impQs.length === 0) {
+                        tabContent.innerHTML = `<div class="notes-content"><p>No important questions available for this unit yet.</p></div>`;
+                    } else {
+                        tabContent.innerHTML = `
+                            <div class="notes-content">
+                                ${impQs.map(q => `
+                                    <div style="margin-bottom: 1.2rem; padding: 1rem; background: #f8fafc; border-radius: 0.8rem;">
+                                        <div class="card-badge" style="margin-bottom: 0.5rem;">${q.category}</div>
+                                        <p style="font-weight: 600;">❓ ${q.question}</p>
+                                        <details style="margin-top: 0.5rem;">
+                                            <summary style="color: #06b6d4; cursor: pointer;">View Answer</summary>
+                                            <p style="margin-top: 0.5rem;">${q.answer || "Answer not available"}</p>
+                                        </details>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            tabs.forEach(tab => {
+                tab.onclick = () => switchTab(tab.getAttribute('data-tab'));
+            });
+            
+            await switchTab("notes");
+            return;
+        }
+        
+        document.getElementById("app").innerHTML = getNavbar() + `<div class="container">${content}</div>` + getFooter();
+    }
+    
+    // Make functions global for onclick
+    window.navigateTo = navigateTo;
+    window.goBack = goBack;
+    window.toggleMobileMenu = toggleMobileMenu;
+    window.toggleLang = toggleLang;
+    window.showUnlockModal = showUnlockModal;
+    
+    // Start the app
+    init();
+</script>
+</body>
+</html>
