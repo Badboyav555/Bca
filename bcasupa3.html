@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCA Nexus Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fb;
+            color: #1e293b;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            cursor: pointer;
+            text-decoration: none;
+            color: #475569;
+        }
+
+        .lang-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+        }
+
+        .mobile-btn {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #0f172a, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #06b6d4;
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #06b6d4;
+            color: #06b6d4;
+        }
+
+        /* Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #06b6d4;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            background: #e2e8f0;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #06b6d4;
+            color: white;
+        }
+
+        /* Notes */
+        .notes-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            line-height: 1.6;
+        }
+
+        .notes-box h2, .notes-box h3 {
+            margin: 1rem 0 0.5rem;
+        }
+
+        .notes-box pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .locked {
+            position: relative;
+            max-height: 350px;
+            overflow: hidden;
+        }
+
+        .locked::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, white);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 380px;
+        }
+
+        .modal-card input {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #06b6d4;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                margin-top: 1rem;
+            }
+            .nav-links.show {
+                display: flex;
+            }
+            .mobile-btn {
+                display: block;
+            }
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        .error-box {
+            text-align: center;
+            padding: 2rem;
+            background: #fee2e2;
+            margin: 2rem;
+            border-radius: 1rem;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">Loading BCA Nexus...</div>
+
+<div id="unlockModal" class="modal">
+    <div class="modal-card">
+        <h3>🔓 Unlock Full Notes</h3>
+        <input type="text" id="unlockName" placeholder="Full Name">
+        <input type="tel" id="unlockMobile" placeholder="Mobile Number">
+        <button class="btn btn-primary" id="unlockSubmit" style="width:100%; margin-top:0.5rem;">Unlock</button>
+        <button id="unlockClose" style="width:100%; margin-top:0.5rem; padding:0.5rem; background:#e2e8f0; border:none; border-radius:2rem;">Cancel</button>
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // 🔥 APNA SUPABASE URL AUR KEY IDHAR DAAL 🔥
+    // ============================================
+    const SUPABASE_URL = "https://rsnywjwcltuicfisqkdo.supabase.co";  // CHANGE KAR
+    const SUPABASE_ANON_KEY = "sb_publishable_86Crft4pqsX_ubUwnSdX6A_9fPl4T2M";  // CHANGE KAR
+    // ============================================
+    
+    let supabase = null;
+    let currentPage = "home";
+    let currentSemester = null;
+    let currentSubject = null;
+    let currentUnit = null;
+    let currentSubjectName = "";
+    let currentLang = "english";
+    
+    let semestersList = [];
+    let subjectsMap = {};
+    let unitsMap = {};
+    let currentNoteData = null;
+    
+    let unlockedNotes = {};
+    
+    try {
+        const saved = localStorage.getItem("unlockedNotes");
+        if (saved) unlockedNotes = JSON.parse(saved);
+    } catch(e) {}
+    
+    // Check Supabase config
+    if (SUPABASE_URL === "https://your-project.supabase.co") {
+        document.getElementById("app").innerHTML = `
+            <div style="text-align:center; padding:3rem;">
+                <h2>⚠️ Supabase Setup Required</h2>
+                <p>Please update SUPABASE_URL and SUPABASE_ANON_KEY in the code:</p>
+                <code style="display:block; background:#f1f5f9; padding:1rem; margin:1rem; text-align:left;">
+                    const SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";<br>
+                    const SUPABASE_ANON_KEY = "your-actual-key";
+                </code>
+                <p style="margin-top:1rem;">Get these from: Supabase Dashboard → Project Settings → API</p>
+            </div>
+        `;
+    } else {
+        // Initialize Supabase
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        loadDataAndStart();
+    }
+    
+    async function loadDataAndStart() {
+        try {
+            // Load semesters
+            const { data: semData, error: semError } = await supabase.from("semesters").select("*").order("id");
+            if (semError) throw semError;
+            semestersList = semData || [];
+            
+            // Load subjects
+            const { data: subData } = await supabase.from("subjects").select("*");
+            subjectsMap = {};
+            if (subData) {
+                subData.forEach(s => {
+                    if (!subjectsMap[s.semester_id]) subjectsMap[s.semester_id] = [];
+                    subjectsMap[s.semester_id].push(s);
+                });
+            }
+            
+            // Load units
+            const { data: unitData } = await supabase.from("units").select("*");
+            unitsMap = {};
+            if (unitData) {
+                unitData.forEach(u => {
+                    if (!unitsMap[u.subject_id]) unitsMap[u.subject_id] = [];
+                    unitsMap[u.subject_id].push(u);
+                });
+            }
+            
+            render();
+        } catch (err) {
+            console.error("Error loading data:", err);
+            document.getElementById("app").innerHTML = `
+                <div style="text-align:center; padding:3rem;">
+                    <h2>❌ Database Error</h2>
+                    <p>${err.message}</p>
+                    <p>Make sure you have run the SQL schema in Supabase SQL Editor.</p>
+                </div>
+            `;
+        }
+    }
+    
+    async function loadNote(unitId) {
+        const { data } = await supabase.from("notes").select("*").eq("unit_id", unitId).maybeSingle();
+        currentNoteData = data;
+        return data;
+    }
+    
+    async function loadPYQs(unitId) {
+        const { data } = await supabase.from("pyqs").select("*").eq("unit_id", unitId).order("year", { ascending: false });
+        return data || [];
+    }
+    
+    async function loadImpQuestions(unitId) {
+        const { data } = await supabase.from("important_questions").select("*").eq("unit_id", unitId);
+        return data || [];
+    }
+    
+    async function saveLead(name, mobile) {
+        try {
+            await supabase.from("leads").insert([{ name, mobile, created_at: new Date().toISOString() }]);
+        } catch(e) { console.log("Lead save error:", e); }
+    }
+    
+    function showUnlockModal(noteId, onUnlock) {
+        const modal = document.getElementById("unlockModal");
+        modal.style.display = "flex";
+        
+        document.getElementById("unlockSubmit").onclick = async () => {
+            const name = document.getElementById("unlockName").value.trim();
+            const mobile = document.getElementById("unlockMobile").value.trim();
+            if (!name || !mobile) {
+                alert("Please enter name and mobile number");
+                return;
+            }
+            await saveLead(name, mobile);
+            unlockedNotes[noteId] = true;
+            localStorage.setItem("unlockedNotes", JSON.stringify(unlockedNotes));
+            modal.style.display = "none";
+            document.getElementById("unlockName").value = "";
+            document.getElementById("unlockMobile").value = "";
+            if (onUnlock) onUnlock();
+            render();
+        };
+        
+        document.getElementById("unlockClose").onclick = () => {
+            modal.style.display = "none";
+        };
+    }
+    
+    function navigateTo(page, params = {}) {
+        currentPage = page;
+        if (params.semester !== undefined) currentSemester = params.semester;
+        if (params.subject !== undefined) { currentSubject = params.subject; currentSubjectName = params.name || ""; }
+        if (params.unit !== undefined) currentUnit = params.unit;
+        render();
+        window.scrollTo(0, 0);
+    }
+    
+    function goBack() {
+        if (currentPage === "subject") {
+            currentPage = "semester";
+            currentSubject = null;
+        } else if (currentPage === "unit") {
+            currentPage = "subject";
+            currentUnit = null;
+        } else {
+            currentPage = "home";
+            currentSemester = null;
+            currentSubject = null;
+            currentUnit = null;
+        }
+        render();
+    }
+    
+    function toggleLang() {
+        currentLang = currentLang === "english" ? "hindi" : "english";
+        render();
+    }
+    
+    function toggleMobile() {
+        const nav = document.getElementById("navLinks");
+        if (nav) nav.classList.toggle("show");
+    }
+    
+    function renderNavbar() {
+        return `
+            <div class="navbar">
+                <div class="logo" onclick="navigateTo('home')">📘 BCA Nexus</div>
+                <button class="mobile-btn" onclick="toggleMobile()">☰</button>
+                <div class="nav-links" id="navLinks">
+                    <a onclick="navigateTo('home')">Home</a>
+                    <a onclick="navigateTo('semester', {semester: ${semestersList[0]?.id || 1}})">Semesters</a>
+                    <a>Notes</a>
+                    <a>PYQs</a>
+                    <button class="lang-btn" onclick="toggleLang()">${currentLang === 'english' ? 'हिंदी' : 'English'}</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    async function render() {
+        let mainContent = "";
+        
+        if (currentPage === "home") {
+            mainContent = `
+                <div class="hero">
+                    <h1>Your Complete BCA<br>Learning Platform</h1>
+                    <p style="margin: 1rem 0;">Notes • PYQs • Important Questions</p>
+                    <div>
+                        <button class="btn btn-primary" onclick="navigateTo('semester', {semester: ${semestersList[0]?.id || 1}})">Start Learning</button>
+                        <button class="btn btn-outline" onclick="navigateTo('semester', {semester: ${semestersList[0]?.id || 1}})">Browse Notes</button>
+                    </div>
+                </div>
+                <h2>📚 All Semesters</h2>
+                <div class="grid">
+                    ${semestersList.map(s => `
+                        <div class="card" onclick="navigateTo('semester', {semester: ${s.id}})">
+                            <h3>Semester ${s.name}</h3>
+                            <p style="color:#64748b; font-size:0.8rem;">${subjectsMap[s.id]?.length || 0} Subjects</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        else if (currentPage === "semester") {
+            const subs = subjectsMap[currentSemester] || [];
+            mainContent = `
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <h2>Semester ${semestersList.find(s => s.id == currentSemester)?.name || currentSemester}</h2>
+                <div class="grid">
+                    ${subs.map(s => `
+                        <div class="card" onclick="navigateTo('subject', {semester: ${currentSemester}, subject: ${s.id}, name: '${s.name}'})">
+                            <h3>${s.name}</h3>
+                            <p style="color:#64748b;">${unitsMap[s.id]?.length || 0} Units</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        else if (currentPage === "subject") {
+            const unis = unitsMap[currentSubject] || [];
+            mainContent = `
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <h2>${currentSubjectName}</h2>
+                <div class="grid">
+                    ${unis.map(u => `
+                        <div class="card" onclick="navigateTo('unit', {semester: ${currentSemester}, subject: ${currentSubject}, unit: ${u.id}})">
+                            <h3>${u.name}</h3>
+                            <p style="color:#64748b;">Notes + PYQs + Imp Qs</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        else if (currentPage === "unit") {
+            await loadNote(currentUnit);
+            const isUnlocked = unlockedNotes[`note_${currentUnit}`];
+            const contentField = currentLang === "english" ? "english_content" : "hindi_content";
+            const fullHTML = currentNoteData?.[contentField] || currentNoteData?.english_content || "<p>No content available</p>";
+            const preview = currentNoteData?.preview_content || (fullHTML.length > 400 ? fullHTML.substring(0, 400) + "..." : fullHTML);
+            
+            mainContent = `
+                <button class="back-btn" onclick="goBack()">← Back</button>
+                <h2>${currentNoteData?.title || "Unit Notes"}</h2>
+                <div class="tabs">
+                    <div class="tab active" data-tab="notes">📄 Notes</div>
+                    <div class="tab" data-tab="pyq">📜 PYQs</div>
+                    <div class="tab" data-tab="imp">⭐ Important Qs</div>
+                </div>
+                <div id="dynamicTabContent"></div>
+            `;
+            
+            document.getElementById("app").innerHTML = renderNavbar() + `<div class="container">${mainContent}</div>` + `<footer>© 2025 BCA Nexus</footer>`;
+            
+            const tabContainer = document.getElementById("dynamicTabContent");
+            
+            window.showTab = async (tabName) => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+                
+                if (tabName === "notes") {
+                    if (!isUnlocked && fullHTML.length > 400) {
+                        tabContainer.innerHTML = `
+                            <div class="locked"><div class="notes-box">${preview}</div></div>
+                            <button class="btn btn-primary" style="display:block; margin:1rem auto;" onclick="showUnlockModal('note_${currentUnit}', () => location.reload())">🔓 Unlock Full Notes</button>
+                        `;
+                    } else {
+                        tabContainer.innerHTML = `<div class="notes-box">${fullHTML}</div>`;
+                    }
+                } else if (tabName === "pyq") {
+                    const pyqs = await loadPYQs(currentUnit);
+                    if (pyqs.length === 0) {
+                        tabContainer.innerHTML = `<div class="notes-box">No PYQs available.</div>`;
+                    } else {
+                        tabContainer.innerHTML = `<div class="notes-box">
+                            ${pyqs.map(p => `
+                                <details style="margin-bottom:1rem; padding:0.5rem; border-bottom:1px solid #e2e8f0;">
+                                    <summary style="font-weight:600;">📅 ${p.year} - ${p.question}</summary>
+                                    <p style="margin-top:0.5rem;">${p.answer || "Answer coming soon"}</p>
+                                </details>
+                            `).join('')}
+                        </div>`;
+                    }
+                } else if (tabName === "imp") {
+                    const imps = await loadImpQuestions(currentUnit);
+                    if (imps.length === 0) {
+                        tabContainer.innerHTML = `<div class="notes-box">No important questions available.</div>`;
+                    } else {
+                        tabContainer.innerHTML = `<div class="notes-box">
+                            ${imps.map(q => `
+                                <div style="margin-bottom:1rem; padding:1rem; background:#f8fafc; border-radius:0.5rem;">
+                                    <span style="background:#06b6d4; color:white; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.7rem;">${q.category}</span>
+                                    <p style="margin:0.5rem 0; font-weight:500;">${q.question}</p>
+                                    <details><summary style="color:#06b6d4;">Answer</summary><p style="margin-top:0.5rem;">${q.answer || "Not available"}</p></details>
+                                </div>
+                            `).join('')}
+                        </div>`;
+                    }
+                }
+            };
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.onclick = () => window.showTab(tab.getAttribute('data-tab'));
+            });
+            
+            await window.showTab('notes');
+            return;
+        }
+        
+        document.getElementById("app").innerHTML = renderNavbar() + `<div class="container">${mainContent}</div>` + `<footer>© 2025 BCA Nexus — Premium Learning Platform</footer>`;
+    }
+    
+    // Make functions global
+    window.navigateTo = navigateTo;
+    window.goBack = goBack;
+    window.toggleLang = toggleLang;
+    window.toggleMobile = toggleMobile;
+    window.showUnlockModal = showUnlockModal;
+</script>
+</body>
+</html>
