@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BCA Premium Notes | Complete Learning Platform</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* =========================================
+           RESET & VARIABLES
+           ========================================= */
+        :root {
+            --primary: #06b6d4; /* Cyan */
+            --primary-glow: rgba(6, 182, 212, 0.4);
+            --secondary: #3b82f6; /* Subtle Blue */
+            --bg-body: #ffffff;
+            --bg-surface: #f8f9fa;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --nav-height: 60px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            overflow-x: hidden;
+            padding-top: var(--nav-height);
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button, input, textarea, select { font-family: inherit; outline: none; border: none; }
+
+        /* =========================================
+           UTILITIES
+           ========================================= */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-2 { gap: 8px; }
+        .gap-4 { gap: 16px; }
+        .grid { display: grid; gap: 16px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .text-center { text-align: center; }
+        .font-heading { font-family: var(--font-heading); }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-primary { color: var(--primary); }
+        .font-bold { font-weight: 600; }
+        .mt-4 { margin-top: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+        .hidden { display: none !important; }
+        
+        /* Animation Utilities */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; opacity: 0; transform: translateY(10px); }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+        /* =========================================
+           COMPONENTS
+           ========================================= */
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px var(--primary-glow); }
+        .btn-outline { border: 1px solid var(--border); background: white; color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-ghost { background: transparent; color: var(--text-muted); }
+        .btn-ghost:hover { background: var(--bg-surface); color: var(--text-main); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+        .card-clickable { cursor: pointer; }
+        .card-badge {
+            position: absolute; top: 12px; right: 12px;
+            background: var(--bg-surface); padding: 4px 8px;
+            border-radius: 20px; font-size: 0.75rem; color: var(--text-muted);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: var(--nav-height);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+        .nav-content { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-family: var(--font-heading); font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; gap: 8px; }
+        .logo i { color: var(--primary); font-size: 1.5rem; }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-link { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); transition: color 0.2s; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: var(--primary); }
+        .mobile-menu-btn { display: none; font-size: 1.5rem; cursor: pointer; }
+
+        /* Search */
+        .search-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: flex; align-items: center; gap: 8px;
+            width: 100%; max-width: 400px; margin: 0 auto;
+        }
+        .search-bar input { background: transparent; flex: 1; font-size: 0.9rem; }
+
+        /* Hero */
+        .hero {
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: 2.5rem; font-weight: 700; margin-bottom: 12px;
+            background: linear-gradient(135deg, #111827 0%, #3b82f6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 24px; }
+
+        /* Reader / Notes */
+        .notes-layout { display: flex; gap: 24px; position: relative; }
+        .notes-content { flex: 1; min-width: 0; }
+        .notes-sidebar { 
+            width: 200px; display: none; 
+            position: sticky; top: 80px; height: fit-content;
+            background: var(--bg-surface); padding: 12px; border-radius: 8px;
+        }
+        .notes-sidebar a { display: block; padding: 8px; font-size: 0.85rem; color: var(--text-muted); border-radius: 4px; margin-bottom: 4px; }
+        .notes-sidebar a:hover { background: white; color: var(--primary); }
+        
+        .note-body {
+            font-size: 1.05rem; line-height: 1.7; color: #374151; position: relative;
+        }
+        .note-body h1, .note-body h2, .note-body h3 { margin-top: 24px; margin-bottom: 12px; color: var(--text-main); font-family: var(--font-heading); }
+        .note-body p { margin-bottom: 16px; }
+        .note-body ul { list-style: disc; padding-left: 20px; margin-bottom: 16px; }
+        .note-body pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 6px; overflow-x: auto; margin-bottom: 16px; font-family: 'Courier New', Courier, monospace; }
+        .note-body img { max-width: 100%; border-radius: 8px; margin: 16px 0; }
+        .note-body blockquote { border-left: 4px solid var(--primary); padding-left: 16px; font-style: italic; color: var(--text-muted); margin-bottom: 16px; }
+
+        /* Lock System */
+        .blur-overlay {
+            position: relative;
+            height: 400px; /* Limit view height */
+            overflow: hidden;
+            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        }
+        .locked-content { filter: blur(8px); user-select: none; pointer-events: none; }
+        .unlock-card {
+            margin-top: -80px; position: relative; z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            padding: 24px; border-radius: var(--radius-lg);
+            text-align: center; box-shadow: var(--shadow-md);
+            margin-bottom: 32px;
+        }
+
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+        .tab { padding: 12px 16px; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+        .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 500; }
+
+        /* Accordion (PYQ) */
+        .accordion-item { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+        .accordion-header { padding: 12px 16px; background: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .accordion-body { padding: 16px; background: var(--bg-surface); border-top: 1px solid var(--border); display: none; }
+        .accordion-item.open .accordion-body { display: block; }
+
+        /* Footer */
+        footer { background: var(--bg-surface); padding: 40px 0; margin-top: 60px; border-top: 1px solid var(--border); }
+
+        /* Mobile Responsive */
+        @media (min-width: 768px) {
+            .notes-sidebar { display: block; }
+        }
+        @media (max-width: 767px) {
+            .nav-links { display: none; position: absolute; top: var(--nav-height); left: 0; right: 0; background: white; flex-direction: column; padding: 16px; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-md); }
+            .nav-links.active { display: flex; }
+            .mobile-menu-btn { display: block; }
+            .hero h1 { font-size: 1.8rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .notes-layout { flex-direction: column; }
+        }
+        
+        /* Demo Badge */
+        .demo-badge {
+            position: fixed; bottom: 20px; right: 20px;
+            background: #f59e0b; color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: bold;
+            z-index: 200; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo" onclick="app.router('home')">
+                <i class="ri-book-open-line"></i> BCA Hub
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="ri-menu-line"></i></button>
+            <div class="nav-links" id="navLinks">
+                <div class="nav-link" onclick="app.router('home')">Home</div>
+                <div class="nav-link" onclick="app.router('semesters')">Semesters</div>
+                <div class="nav-link" onclick="app.router('search')">Search</div>
+                <div class="nav-link" onclick="window.location.href='admin.html'">Admin</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app" class="container" style="min-height: 80vh; padding-top: 24px; padding-bottom: 24px;">
+        <!-- Content will be injected here via JavaScript -->
+    </main>
+
+    <!-- Unlock Modal (Hidden by default) -->
+    <div id="unlockModal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="card" style="width: 90%; max-width: 400px; padding: 30px; text-align: center;">
+            <i class="ri-lock-2-fill" style="font-size: 3rem; color: var(--primary); margin-bottom: 16px;"></i>
+            <h2 class="font-heading" style="margin-bottom: 8px;">Unlock Full Notes</h2>
+            <p class="text-sm text-muted" style="margin-bottom: 24px;">Get access to complete notes, PYQs, and diagrams.</p>
+            <form id="unlockForm" onsubmit="handleUnlock(event)">
+                <input type="text" id="userName" placeholder="Your Name" required style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px;">
+                <input type="tel" id="userMobile" placeholder="Mobile Number" required pattern="[0-9]{10}" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px;">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Unlock Now</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="text-sm text-muted">&copy; 2025 Premium BCA Hub. Built for students.</p>
+        </div>
+    </footer>
+
+    <!-- Demo Mode Badge -->
+    <div id="demoBadge" class="demo-badge hidden">DEMO MODE</div>
+
+    <script>
+        // =========================================
+        // CONFIGURATION & SUPABASE SETUP
+        // =========================================
+        const SUPABASE_URL = "https://gblftqjshhukrcwukjfw.supabase.co"; // ADD YOUR SUPABASE URL HERE
+        const SUPABASE_KEY = "sb_publishable_Mz2N6p-1qE5ZeNDMhDbgVA_cesNd4Pf"; // ADD YOUR SUPABASE ANON KEY HERE
+        
+        let supabase = null;
+        let isDemoMode = false;
+
+        // Initialize DB Connection
+        if (SUPABASE_URL && SUPABASE_KEY) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log("Supabase Connected");
+        } else {
+            isDemoMode = true;
+            document.getElementById('demoBadge').classList.remove('hidden');
+            console.log("Demo Mode Active");
+        }
+
+        // =========================================
+        // STATE & DATA
+        // =========================================
+        const state = {
+            view: 'home',
+            currentSemId: null,
+            currentSubId: null,
+            currentUnitId: null,
+            lang: 'en', // 'en' or 'hi'
+            unlocked: localStorage.getItem('bca_unlocked') === 'true'
+        };
+
+        // DEMO DATA (Used if Supabase keys are missing)
+        const demoData = {
+            semesters: [
+                { id: 1, name: "Semester 1" },
+                { id: 2, name: "Semester 2" },
+                { id: 3, name: "Semester 3" },
+                { id: 4, name: "Semester 4" },
+                { id: 5, name: "Semester 5" },
+                { id: 6, name: "Semester 6" }
+            ],
+            subjects: [
+                { id: 101, semester_id: 1, name: "Programming in C", units_count: 5 },
+                { id: 102, semester_id: 1, name: "Mathematics - I", units_count: 5 },
+                { id: 103, semester_id: 2, name: "Data Structures", units_count: 5 },
+                { id: 104, semester_id: 2, name: "Digital Electronics", units_count: 5 }
+            ],
+            units: [
+                { id: 1001, subject_id: 101, name: "Unit 1: Introduction to C" },
+                { id: 1002, subject_id: 101, name: "Unit 2: Operators & Expressions" },
+                { id: 1003, subject_id: 102, name: "Unit 1: Set Theory" }
+            ],
+            notes: {
+                1001: {
+                    title: "Introduction to C Programming",
+                    en: `
+                        <h2>History of C</h2>
+                        <p>C is a general-purpose, procedural computer programming language supporting structured programming, lexical variable scope, and recursion, with a static type system.</p>
+                        <h2>Features of C</h2>
+                        <ul>
+                            <li>Simple and Efficient</li>
+                            <li>Portable</li>
+                            <li>Mid-level Language</li>
+                            <li>Structured Programming</li>
+                        </ul>
+                        <h2>First Program</h2>
+                        <pre>#include &lt;stdio.h&gt;
+int main() {
+    printf("Hello, World!");
+    return 0;
+}</pre>
+                        <h2>Variables and Data Types</h2>
+                        <p>In C, variables must be declared before use. Basic types include int, float, char, and double.</p>
+                        <div class="locked-content">
+                            <p>This is the premium content. Variables are containers for storing data values. In C, there are different types of variables (defined with different keywords), for example:</p>
+                            <ul>
+                                <li><strong>int</strong> - stores integers (whole numbers), without decimals, such as 123 or -123</li>
+                                <li><strong>float</strong> - stores floating point numbers, with decimals, such as 19.99 or -19.99</li>
+                                <li><strong>char</strong> - stores single characters, such as 'a' or 'B'. Char values are surrounded by single quotes</li>
+                            </ul>
+                            <h2>Constants</h2>
+                            <p>If you don't want others (or yourself) to overwrite existing values, you can use the const keyword.</p>
+                            <p>This will declare the variable as "constant", which means unchangeable and read-only:</p>
+                        </div>
+                    `,
+                    hi: `
+                        <h2>C का इतिहास</h2>
+                        <p>C एक सामान्य-प्रयोजन, प्रक्रियात्मक कंप्यूटर प्रोग्रामिंग भाषा है जो संरचित प्रोग्रामिंग, शब्दार्थ चर दायरा और पुनरावृत्ति का समर्थन करती है।</p>
+                        <h2>C की विशेषताएं</h2>
+                        <ul>
+                            <li>सरल और कुशल</li>
+                            <li>पोर्टेबल</li>
+                            <li>मध्य-स्तरीय भाषा</li>
+                        </ul>
+                        <div class="locked-content">
+                             <p>यह प्रीमियम सामग्री है। वेरिएबल्स डेटा वैल्यू स्टोर करने वाले कंटेनर होते हैं।</p>
+                             <p>C में अलग-अलग प्रकार के वेरिएबल्स होते हैं, जैसे int, float, char।</p>
+                        </div>
+                    `
+                }
+            },
+            pyqs: [
+                { id: 1, unit_id: 1001, year: 2023, question: "What is a pointer?", answer: "A pointer is a variable that stores the memory address of another variable." },
+                { id: 2, unit_id: 1001, year: 2024, question: "Explain printf().", answer: "printf() is a function used to output formatted text to the screen." }
+            ],
+            important: [
+                { id: 1, unit_id: 1001, category: "Viva", question: "Who developed C?", answer: "Dennis Ritchie" }
+            ]
+        };
+
+        // =========================================
+        // DATA FETCHING LAYER
+        // =========================================
+        const api = {
+            getSemesters: async () => {
+                if (isDemoMode) return demoData.semesters;
+                const { data, error } = await supabase.from('semesters').select('*');
+                return data || [];
+            },
+            getSubjects: async (semId) => {
+                if (isDemoMode) return demoData.subjects.filter(s => s.semester_id === semId);
+                const { data, error } = await supabase.from('subjects').select('*').eq('semester_id', semId);
+                return data || [];
+            },
+            getUnits: async (subId) => {
+                if (isDemoMode) return demoData.units.filter(u => u.subject_id === subId);
+                const { data, error } = await supabase.from('units').select('*').eq('subject_id', subId);
+                return data || [];
+            },
+            getNotes: async (unitId) => {
+                if (isDemoMode) return demoData.notes[unitId] || null;
+                const { data, error } = await supabase.from('notes').select('*').eq('unit_id', unitId).single();
+                return data;
+            },
+            getPYQs: async (unitId) => {
+                if (isDemoMode) return demoData.pyqs.filter(p => p.unit_id === unitId);
+                const { data, error } = await supabase.from('pyqs').select('*').eq('unit_id', unitId);
+                return data || [];
+            },
+            getImportant: async (unitId) => {
+                if (isDemoMode) return demoData.important.filter(i => i.unit_id === unitId);
+                const { data, error } = await supabase.from('important_questions').select('*').eq('unit_id', unitId);
+                return data || [];
+            },
+            submitLead: async (name, mobile) => {
+                if (isDemoMode) {
+                    console.log(`Demo Lead: ${name}, ${mobile}`);
+                    return true;
+                }
+                const { error } = await supabase.from('leads').insert([{ name, mobile }]);
+                return !error;
+            }
+        };
+
+        // =========================================
+        // APP LOGIC & ROUTER
+        // =========================================
+        const app = {
+            router: async (view, id = null) => {
+                const appEl = document.getElementById('app');
+                appEl.innerHTML = '<div class="text-center mt-4"><i class="ri-loader-4-line animate-spin" style="font-size:2rem;"></i></div>'; // Loader
+                
+                window.scrollTo(0, 0);
+                state.view = view;
+                
+                // Render based on view
+                if (view === 'home') {
+                    appEl.innerHTML = components.home();
+                } else if (view === 'semesters') {
+                    const data = await api.getSemesters();
+                    appEl.innerHTML = components.semesters(data);
+                } else if (view === 'subjects') {
+                    state.currentSemId = id;
+                    const data = await api.getSubjects(id);
+                    appEl.innerHTML = components.subjects(data);
+                } else if (view === 'units') {
+                    state.currentSubId = id;
+                    const data = await api.getUnits(id);
+                    appEl.innerHTML = components.units(data);
+                } else if (view === 'note') {
+                    state.currentUnitId = id;
+                    const data = await api.getNotes(id);
+                    appEl.innerHTML = components.noteReader(data);
+                } else if (view === 'search') {
+                    appEl.innerHTML = components.search();
+                }
+            },
+
+            toggleLang: async () => {
+                state.lang = state.lang === 'en' ? 'hi' : 'en';
+                if (state.view === 'note') {
+                    const data = await api.getNotes(state.currentUnitId);
+                    document.getElementById('noteContent').innerHTML = state.lang === 'en' ? data.english_content : data.hindi_content;
+                }
+            }
+        };
+
+        // =========================================
+        // COMPONENTS (HTML Generators)
+        // =========================================
+        const components = {
+            home: () => `
+                <section class="hero fade-in">
+                    <h1 class="font-heading">Your Complete<br>BCA Learning Platform</h1>
+                    <p>Notes • PYQs • Important Questions</p>
+                    <div class="flex justify-center gap-4">
+                        <button class="btn btn-primary" onclick="app.router('semesters')">Start Learning</button>
+                        <button class="btn btn-outline" onclick="app.router('semesters')">Browse Notes</button>
+                    </div>
+                </section>
+                
+                <div class="mt-4 fade-in" style="animation-delay: 0.1s;">
+                    <div class="search-bar">
+                        <i class="ri-search-line text-muted"></i>
+                        <input type="text" placeholder="Search subjects, units..." onkeyup="handleSearch(this.value)">
+                    </div>
+                </div>
+
+                <div class="mt-4 fade-in" style="animation-delay: 0.2s;">
+                    <h3 class="font-heading mb-4">Popular Semesters</h3>
+                    <div class="grid grid-2">
+                         ${[1,2,3,4].map(i => `
+                            <div class="card card-clickable" onclick="app.router('subjects', ${i})">
+                                <h3 class="font-heading">Semester ${i}</h3>
+                                <p class="text-sm text-muted mt-4">Common Core Subjects</p>
+                                <div class="card-badge">${i*5} Units</div>
+                            </div>
+                         `).join('')}
+                    </div>
+                </div>
+            `,
+            semesters: (data) => `
+                <h2 class="font-heading mb-4">All Semesters</h2>
+                <div class="grid grid-2 fade-in">
+                    ${data.map(sem => `
+                        <div class="card card-clickable" onclick="app.router('subjects', ${sem.id})">
+                            <h3 class="font-heading">${sem.name}</h3>
+                            <p class="text-sm text-muted mt-4">Tap to view subjects</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `,
+            subjects: (data) => `
+                <button class="btn btn-ghost btn-sm mb-4" onclick="app.router('semesters')"><i class="ri-arrow-left-line"></i> Back</button>
+                <h2 class="font-heading mb-4">Subjects</h2>
+                <div class="grid fade-in">
+                    ${data.map(sub => `
+                        <div class="card card-clickable" onclick="app.router('units', ${sub.id})">
+                            <h3 class="font-heading">${sub.name}</h3>
+                            <div class="flex gap-4 mt-4 text-sm text-muted">
+                                <span><i class="ri-book-open-line"></i> ${sub.units_count || 5} Units</span>
+                                <span><i class="ri-file-list-line"></i> Notes</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `,
+            units: (data) => `
+                <button class="btn btn-ghost btn-sm mb-4" onclick="app.router('subjects', ${state.currentSemId})"><i class="ri-arrow-left-line"></i> Back</button>
+                <h2 class="font-heading mb-4">Units</h2>
+                <div class="grid fade-in">
+                    ${data.map(unit => `
+                        <div class="card card-clickable" onclick="app.router('note', ${unit.id})">
+                            <h3 class="font-heading">${unit.name}</h3>
+                            <p class="text-sm text-muted mt-4">Notes & PYQs Available</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `,
+            noteReader: (data) => {
+                if (!data) return '<div class="text-center mt-4">No content found.</div>';
+                const content = state.lang === 'en' ? data.english_content : data.hindi_content;
+                const isUnlocked = state.unlocked;
+
+                return `
+                <div class="flex justify-between items-center mb-4">
+                    <button class="btn btn-ghost btn-sm" onclick="app.router('units', ${state.currentSubId})"><i class="ri-arrow-left-line"></i> Back to Units</button>
+                    <button class="btn btn-outline btn-sm" onclick="app.toggleLang()">
+                        <i class="ri-translate"></i> ${state.lang === 'en' ? 'हिंदी' : 'English'}
+                    </button>
+                </div>
+
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <div class="tabs">
+                        <div class="tab active">Notes</div>
+                        <div class="tab" onclick="alert('Mock functionality: Load PYQs here')">PYQs</div>
+                        <div class="tab" onclick="alert('Mock functionality: Load Important Qs here')">Important</div>
+                    </div>
+                    
+                    <div class="notes-container" style="padding: 24px;">
+                        ${!isUnlocked ? `
+                            <div class="blur-overlay">
+                                <div id="noteContent" class="note-body">${content}</div>
+                            </div>
+                            <div class="unlock-card">
+                                <h3 class="font-heading">Premium Content</h3>
+                                <p class="text-sm text-muted mb-4">Unlock full notes to continue reading.</p>
+                                <button class="btn btn-primary" onclick="showUnlockModal()">Unlock Full Notes</button>
+                            </div>
+                        ` : `
+                            <div id="noteContent" class="note-body">${content}</div>
+                        `}
+                    </div>
+                </div>
+                `;
+            },
+            search: () => `
+                <h2 class="font-heading mb-4">Search</h2>
+                <div class="search-bar mb-4">
+                    <i class="ri-search-line text-muted"></i>
+                    <input type="text" placeholder="Type to search..." id="globalSearch" onkeyup="globalSearch(this.value)">
+                </div>
+                <div id="searchResults" class="grid"></div>
+            `
+        };
+
+        // =========================================
+        // INTERACTIONS
+        // =========================================
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        function showUnlockModal() {
+            document.getElementById('unlockModal').classList.remove('hidden');
+        }
+
+        async function handleUnlock(e) {
+            e.preventDefault();
+            const name = document.getElementById('userName').value;
+            const mobile = document.getElementById('userMobile').value;
+
+            // Simulate API Call
+            const success = await api.submitLead(name, mobile);
+            
+            if (success) {
+                state.unlocked = true;
+                localStorage.setItem('bca_unlocked', 'true');
+                document.getElementById('unlockModal').classList.add('hidden');
+                app.router('note', state.currentUnitId); // Reload view
+            } else {
+                alert("Error submitting details. Try again.");
+            }
+        }
+
+        // Simple search mock
+        function handleSearch(query) {
+            console.log("Searching for", query);
+            // In a real app, this would filter data and re-render
+        }
+        
+        function globalSearch(query) {
+            const resultsDiv = document.getElementById('searchResults');
+            if(query.length < 2) {
+                resultsDiv.innerHTML = ''; 
+                return;
+            }
+            // Demo search logic
+            resultsDiv.innerHTML = `
+                <div class="text-sm text-muted">Showing results for "${query}"</div>
+                <div class="card card-clickable mt-4" onclick="app.router('note', 1001)">
+                    <h4 class="font-heading">Introduction to C</h4>
+                    <p class="text-xs text-muted">Sem 1 - Unit 1</p>
+                </div>
+            `;
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            app.router('home');
+        });
+
+    </script>
+</body>
+</html>
